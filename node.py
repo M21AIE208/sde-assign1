@@ -1,12 +1,11 @@
 import socket
 import threading
-import tqdm
 import os
 import hashlib
 
-# receive 4096 bytes each time
-BUFFER_SIZE = 4096
-SEPARATOR = "<SEPARATOR>"
+
+BUFFER_SIZE = 4096 # receive 4096 bytes each time
+SEPARATOR = "<SEP>"
 
 class Node(threading.Thread):
 
@@ -50,19 +49,13 @@ class Node(threading.Thread):
         self.sock.connect((ip,port))
         print("Connected.")
         self.sock.send(f"{filename}{SEPARATOR}{filesize}".encode())
-        progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
         with open(filename, "rb") as f:
-            while True:
-                # read the bytes from the file
+            while True:e
                 bytes_read = f.read(BUFFER_SIZE)
                 if not bytes_read:
-                    # file transmitting is done
                     break
-                # we use sendall to assure transimission in 
-                # busy networks
+                    
                 self.sock.sendall(bytes_read)
-                # update the progress bar
-                progress.update(len(bytes_read))
         self.sock.close()
                 
     
